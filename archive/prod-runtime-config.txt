@@ -1,0 +1,27 @@
+# /etc/systemd/system/cms-backend.service
+[Unit]
+Description=CMS Backend (RuoYi ruoyi-admin)
+After=network.target mysqld.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/home/lx/CMS/backend
+ExecStart=/usr/bin/java -Xms128m -Xmx512m -jar ruoyi-admin.jar --spring.datasource.druid.master.url=jdbc:mysql://127.0.0.1:2217/cms?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true --spring.datasource.druid.master.username=root --spring.datasource.druid.master.password=Cms@2026server --spring.data.redis.password=1234 --server.address=127.0.0.1
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
+
+=== nginx 剩余 ===
+
+    location ^~ /api/admin/cms/ {
+        proxy_pass http://127.0.0.1:8080;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+    }
+}
+=== pm2 cms 条目 ===

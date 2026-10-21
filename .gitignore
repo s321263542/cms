@@ -10,3 +10,7 @@ target/
 .idea/
 *.iml
 .vscode/
+
+# archive/ 里放的是删除线上前的整库导出和当时跑着的 jar，特意入库留底
+!archive/*.jar
+!archive/*.tar.gz
