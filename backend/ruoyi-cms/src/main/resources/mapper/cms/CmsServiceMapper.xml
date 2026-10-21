@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CmsServiceMapper">
+
+    <resultMap id="CmsServiceResult" type="com.ruoyi.cms.domain.CmsService">
+        <id     column="id"              property="id"/>
+        <result column="category"        property="category"/>
+        <result column="country_id"      property="countryId"/>
+        <result column="title"           property="title"/>
+        <result column="sub_title"       property="subTitle"/>
+        <result column="summary"         property="summary"/>
+        <result column="badge_text"      property="badgeText"/>
+        <result column="price_text"      property="priceText"/>
+        <result column="slug"            property="slug"/>
+        <result column="cover_url"       property="coverUrl"/>
+        <result column="content"         property="content"/>
+        <result column="process_steps"   property="processSteps"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="related_ids"     property="relatedIds"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="views"           property="views"/>
+        <result column="sort_order"      property="sortOrder"/>
+        <result column="is_recommended"  property="isRecommended"/>
+        <result column="is_home_show"    property="isHomeShow"/>
+        <result column="seo_title"       property="seoTitle"/>
+        <result column="seo_description" property="seoDescription"/>
+        <result column="seo_keywords"    property="seoKeywords"/>
+        <result column="i18n_json"       property="i18nJson"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="ext_json"        property="extJson"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="status"          property="status"/>
+    </resultMap>
+
+    <sql id="PublicWhere">
+        is_deleted = 0 AND status = 1 AND live_flag = 1
+    </sql>
+
+    <select id="selectPublicList" resultMap="CmsServiceResult">
+        SELECT id, category, country_id, title, sub_title, summary, badge_text, price_text,
+               slug, cover_url, content, process_steps, related_ids, views, sort_order,
+               is_recommended, is_home_show, seo_title, seo_description, seo_keywords,
+               i18n_json, ext_json, status
+        FROM cms_service
+        WHERE <include refid="PublicWhere"/>
+        <if test="homeOnly">
+            AND is_home_show = 1
+        </if>
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+        ORDER BY sort_order ASC
+    </select>
+
+    <select id="selectPublicBySlug" resultMap="CmsServiceResult">
+        SELECT id, category, country_id, title, sub_title, summary, badge_text, price_text,
+               slug, cover_url, content, process_steps, related_ids, views, sort_order,
+               is_recommended, is_home_show, seo_title, seo_description, seo_keywords,
+               i18n_json, ext_json, status
+        FROM cms_service
+        WHERE <include refid="PublicWhere"/>
+          AND slug = #{slug}
+        LIMIT 1
+    </select>
+
+</mapper>

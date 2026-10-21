@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CmsLeadMapper">
+
+    <!-- 只插前台真正采集到的列，其余走列默认值（created_by='front'、status=0 等） -->
+    <insert id="insertLead" parameterType="com.ruoyi.cms.domain.CmsLead"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO cms_lead (
+            name, phone, phone_masked, service_id, service_title, country_id,
+            source, dedup_hash, ip, user_agent,
+            utm_source, utm_medium, utm_campaign, utm_term, referrer,
+            status, consent_flag, consent_time, consent_version, remark, created_by
+        ) VALUES (
+            #{name}, #{phone}, #{phoneMasked}, #{serviceId}, #{serviceTitle}, #{countryId},
+            #{source}, #{dedupHash}, #{ip}, #{userAgent},
+            #{utmSource}, #{utmMedium}, #{utmCampaign}, #{utmTerm}, #{referrer},
+            #{status}, #{consentFlag}, #{consentTime}, #{consentVersion}, #{remark}, #{createdBy}
+        )
+    </insert>
+
+</mapper>

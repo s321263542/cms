@@ -1,0 +1,35 @@
+
+DROP TABLE IF EXISTS cms_service;
+CREATE TABLE cms_service (
+  id            BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+  category      VARCHAR(30)  NOT NULL                COMMENT '大类(字典 cms_service_category)',
+  country_id    BIGINT       NOT NULL DEFAULT 0      COMMENT '国家ID,0=全球/多国通用',
+  title         VARCHAR(150) NOT NULL                COMMENT '服务标题(中文=默认)',
+  sub_title     VARCHAR(150)          DEFAULT NULL   COMMENT '副标题',
+  summary       VARCHAR(500)          DEFAULT NULL   COMMENT '摘要',
+  badge_text    VARCHAR(50)           DEFAULT NULL   COMMENT '角标文案 如:2026新动态',
+  price_text    VARCHAR(80)           DEFAULT NULL   COMMENT '价格文案 如:4个工作日·加急1天',
+  slug          VARCHAR(100) NOT NULL                COMMENT 'SEO URL(全站英文一套,如 hk-company-registration)',
+  cover_url     VARCHAR(255)          DEFAULT NULL   COMMENT '封面 object key',
+  content       MEDIUMTEXT                     NULL   COMMENT '正文 HTML(已过 Jsoup 白名单)',
+  process_steps JSON                             NULL   COMMENT '办理流程步骤 [{icon,name,desc}]',
+  related_ids   JSON                             NULL   COMMENT '关联文章ID数组(应用层维护)',
+  views         INT          NOT NULL DEFAULT 0      COMMENT '浏览量(Redis 计数,定时回写)',
+  sort_order    INT          NOT NULL DEFAULT 0      COMMENT '排序',
+  is_recommended TINYINT     NOT NULL DEFAULT 0      COMMENT '是否首页推荐 1是',
+  is_home_show  TINYINT      NOT NULL DEFAULT 1      COMMENT '是否首页展示 1是',
+  seo_title     VARCHAR(200)          DEFAULT NULL   COMMENT 'SEO 标题',
+  seo_description VARCHAR(300)        DEFAULT NULL   COMMENT 'SEO 描述',
+  seo_keywords  VARCHAR(200)          DEFAULT NULL   COMMENT 'SEO 关键词',
+  i18n_json     JSON                             NULL   COMMENT '英文增量 {"en":{"title":"","sub_title":"","summary":"","seo_title":"","seo_description":""}}',
+  ext_json      JSON                             NULL   COMMENT '扩展字段(预留)',
+  status        TINYINT      NOT NULL DEFAULT 1      COMMENT '状态 1上架 0下架',
+  is_deleted    TINYINT      NOT NULL DEFAULT 0      COMMENT '逻辑删除',
+  created_by    VARCHAR(64)           DEFAULT 'admin',
+  created_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_by    VARCHAR(64)           DEFAULT NULL,
+  updated_at    DATETIME              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_slug (slug)
+  -- 索引见 §6 真实查询场景对照
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='服务矩阵/办理流程';

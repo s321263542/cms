@@ -1,0 +1,12 @@
+node_modules/
+.nuxt/
+.output/
+data/
+target/
+*.jar
+*.log
+*.pid
+.DS_Store
+.idea/
+*.iml
+.vscode/

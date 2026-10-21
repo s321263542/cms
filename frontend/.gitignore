@@ -1,0 +1,12 @@
+node_modules
+.nuxt
+.output
+.data
+dist
+# archive repo keeps .env (only 3 NUXT_PUBLIC_* values, no secrets)
+.env
+.env.*
+!.env
+!.env.example
+*.log
+.DS_Store

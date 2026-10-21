@@ -1,0 +1,10 @@
+
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE cms_country;
+TRUNCATE TABLE cms_site_config;
+TRUNCATE TABLE cms_banner;
+TRUNCATE TABLE cms_service;
+TRUNCATE TABLE cms_partner_bank;
+TRUNCATE TABLE cms_case;
+TRUNCATE TABLE cms_article;
+SET FOREIGN_KEY_CHECKS=1;

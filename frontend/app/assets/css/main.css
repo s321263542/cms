@@ -1,0 +1,452 @@
+@import "tailwindcss";
+
+/* Tailwind 只会为「它扫得到的文件里的字符串」生成样式。
+   server/ 下的 mock 数据（ext_json.gradient 等动态类名）默认不在扫描范围内，
+   这里显式把它加进来，否则渐变头会因为没编译而变成白底白字。
+   注意：真实后端的值来自数据库，永远扫不到 —— 所以组件里还有一份
+   GRADIENTS 白名单兜底（见 components/home/PackagesSection.vue）。 */
+@source "../../../server";
+
+/* ==========================================================================
+   永鸿国际出海企服 · 前台全局样式
+   视觉规范严格对齐《海外企服CMS_交互式产品原型.html》前台画卷部分
+   ========================================================================== */
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #10b981;
+  color: #fff;
+}
+
+/* 滚动条（与原型一致：细条，悬停翡翠绿） */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #059669; }
+
+/* --------------------------------------------------------------------------
+   1. 正文可读性标准（原型“深黑字体”规范）
+   段落 / 说明文字统一加深加粗，杜绝浅灰发虚
+   -------------------------------------------------------------------------- */
+body p,
+body .text-slate-600,
+body .text-slate-500 {
+  color: #111827 !important;
+  font-weight: 500 !important;
+}
+
+body .text-slate-400 {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+/* 卡片描述专用深黑正文 */
+.card-desc-dark {
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   2. 3D 画卷与卡片阴影
+   -------------------------------------------------------------------------- */
+.cert-shadow {
+  box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.vip-card-shadow {
+  box-shadow: 0 25px 40px -12px rgba(4, 120, 87, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   3. 导航：中文不竖排、不折行
+   -------------------------------------------------------------------------- */
+.site-nav a,
+.nav-link-item {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  display: inline-flex !important;
+  align-items: center;
+  flex-shrink: 0 !important;
+}
+
+.site-nav .front-nav-item.is-active {
+  color: #047857 !important;
+  font-weight: 800 !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. 「关于我们」下拉（悬停 / 点击双保险必定展开）
+   -------------------------------------------------------------------------- */
+.about-dropdown { position: relative; }
+
+.about-dropdown:hover .about-dropdown-menu,
+.about-dropdown.is-open .about-dropdown-menu {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* 下拉箭头：内联 SVG，不依赖图标字体，任何设备都不会出现豆腐块 */
+#arrow-about-dropdown {
+  transform-origin: center center;
+  line-height: 0;
+  transition: transform 0.2s ease;
+}
+
+/* --------------------------------------------------------------------------
+   5. 通用工具
+   -------------------------------------------------------------------------- */
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+.fade-enter-active, .fade-leave-active { transition: opacity 0.18s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* 富文本正文排版（cms_article.content） */
+.article-body h2 { font-size: 1.35rem; font-weight: 900; color: #0f172a; margin: 1.8rem 0 0.8rem; }
+.article-body h3 { font-size: 1.15rem; font-weight: 800; color: #0f172a; margin: 1.4rem 0 0.6rem; }
+.article-body p  { margin: 0.9rem 0; line-height: 1.85; color: #111827; }
+.article-body ul, .article-body ol { margin: 0.9rem 0 0.9rem 1.4rem; line-height: 1.85; }
+.article-body ul { list-style: disc; }
+.article-body ol { list-style: decimal; }
+.article-body li { margin: 0.35rem 0; color: #111827; }
+.article-body a  { color: #047857; text-decoration: underline; }
+.article-body strong { color: #0f172a; font-weight: 800; }
+.article-body blockquote {
+  border-left: 4px solid #10b981;
+  background: #f0fdf4;
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 1rem 0;
+  color: #065f46;
+}
+.article-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+.article-body th, .article-body td { border: 1px solid #e2e8f0; padding: 0.55rem 0.75rem; text-align: left; }
+.article-body th { background: #f8fafc; font-weight: 800; color: #0f172a; }
+.article-body img { max-width: 100%; border-radius: 1rem; }
+
+/* ==========================================================================
+   6. 内容组件词汇（cb-*）
+   --------------------------------------------------------------------------
+   cms_article.content 是富文本，里面的类名必须「跟着样式文件走」，
+   不能用 Tailwind 任意类——否则内容进库后换主题/换框架就散架。
+   这套 cb-* 是后台富文本与前台之间的契约：运营按这些小标题插内容即可。
+   ========================================================================== */
+.cb-lead {
+  border-left: 4px solid #10b981;
+  background: linear-gradient(90deg, #ecfdf5 0%, #f8fafc 100%);
+  border-radius: 0 0.9rem 0.9rem 0;
+  padding: 0.9rem 1.1rem;
+  margin: 1.2rem 0;
+  color: #065f46;
+  font-weight: 600;
+  line-height: 1.8;
+}
+
+.cb-cards2,
+.cb-cards4 {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.1rem 0;
+}
+.cb-cards2 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.cb-cards4 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+.cb-card {
+  background: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.cb-card:hover { border-color: #10b981; box-shadow: 0 10px 25px -12px rgba(16, 185, 129, 0.35); }
+.cb-card > strong { display: block; color: #0f172a; font-weight: 800; margin-bottom: 0.35rem; }
+.cb-card p { margin: 0; font-size: 0.9rem; line-height: 1.7; color: #111827; }
+
+.cb-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.6rem;
+  background: #d1fae5;
+  color: #047857;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+.cb-card__value {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #047857;
+  line-height: 1.2;
+}
+.cb-card__label {
+  font-size: 0.78rem;
+  color: #334155;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* ---- 团队成员 ---- */
+.cb-persons { display: grid; gap: 0.9rem; margin: 1.1rem 0; }
+.cb-person {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: #fff;
+  border: 2px solid #a7f3d0;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+}
+.cb-person--teal { border-color: #99f6e4; }
+.cb-person__avatar {
+  flex: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #059669, #0d9488);
+  color: #fff;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+.cb-person__body { flex: 1 1 auto; min-width: 0; }
+.cb-person__name { font-weight: 800; color: #0f172a; }
+.cb-person__meta { font-size: 0.82rem; color: #334155; margin-top: 0.2rem; line-height: 1.6; }
+.cb-person__badge {
+  flex: none;
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 9999px;
+  padding: 0.2rem 0.6rem;
+}
+
+/* ---- 招聘岗位 ---- */
+.cb-jobs { display: grid; gap: 0.9rem; margin: 1.1rem 0; }
+@media (min-width: 768px) { .cb-jobs { grid-template-columns: 1fr 1fr; } }
+.cb-job { border: 2px solid #e2e8f0; border-radius: 1rem; padding: 1.1rem; background: #fff; }
+.cb-job--amber { border-color: #fcd34d; background: linear-gradient(135deg, #fffbeb, #fff); }
+.cb-job--emerald { border-color: #6ee7b7; background: linear-gradient(135deg, #ecfdf5, #fff); }
+.cb-job__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.cb-job__title { font-weight: 900; color: #0f172a; }
+.cb-job__pay {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #047857;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 9999px;
+  padding: 0.15rem 0.6rem;
+}
+.cb-job__desc { margin: 0.6rem 0 0; font-size: 0.9rem; line-height: 1.75; color: #111827; }
+
+/* ---- 简历投递 ---- */
+.cb-resume {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 1.2rem 0;
+  background: #0f172a;
+  color: #fff;
+  border-radius: 1rem;
+  padding: 1rem 1.2rem;
+}
+.cb-resume__label { font-size: 0.75rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.cb-resume__mail { font-family: var(--font-mono); font-weight: 800; font-size: 0.95rem; color: #fff; }
+.cb-resume__tip { font-size: 0.78rem; color: #a7f3d0; font-weight: 700; }
+
+/* ---- 深色 CTA 横幅 ---- */
+.cb-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.2rem 0;
+  background: linear-gradient(135deg, #047857 0%, #0f172a 100%);
+  border-radius: 1rem;
+  padding: 1.3rem 1.5rem;
+}
+.cb-cta__title { font-size: 1.15rem; font-weight: 900; color: #fff; }
+.cb-cta__sub { font-size: 0.88rem; color: #d1fae5; margin-top: 0.3rem; line-height: 1.7; }
+.cb-cta__btn {
+  flex: none;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  color: #1f2937;
+  font-weight: 900;
+  font-size: 0.9rem;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.cb-cta__btn:hover { transform: translateY(-2px); box-shadow: 0 12px 22px -12px rgba(245, 158, 11, 0.8); }
+
+/* 内容里的 CTA 按钮由事件委托打开留资弹窗 */
+[data-inquiry] { user-select: none; }
+
+/* ==========================================================================
+   7. 布局辅助
+   ========================================================================== */
+/* 固定顶栏的锚点偏移（首页分区跳转不再被头部盖住） */
+:target,
+[id^='sec-'],
+[id^='page-'] {
+  scroll-margin-top: 132px;
+}
+
+/* 移动端底部操作条占位，避免遮住页脚最后一行
+   （断点跟 MobileActionBar 的 md:hidden 对齐：它是 ≤767px 才显示，
+     以前写 640px，641–767 区间底部条会直接压在页脚最后一行上） */
+@media (max-width: 767px) {
+  body { padding-bottom: 64px; }
+}
+
+/* 右下角客服卡片的高度上限兜底。
+   组件里写的是 dvh（会跟着手机地址栏伸缩），旧浏览器不认 dvh 时整条声明会被丢掉，
+   那样卡片就只剩 height:560px、矮视口下会把输入框挤出卡片 —— 这里用 vh 兜住。 */
+.cs-card { max-height: calc(100vh - 170px); }
+
+/* 手机端客服窗默认收起。
+   组件初始就带着 .cs-auto，只要用户没主动点开/收起过，≤767px 下卡片和竖条都不出现
+   （入口是底部常驻操作条的「在线咨询」）；≥768 桌面不受影响，照旧默认展开。
+   用户一旦操作过，组件就把 .cs-auto 摘掉，之后完全交给 v-show。 */
+@media (max-width: 767px) {
+  .cs-auto.cs-card,
+  .cs-auto.cs-pill { display: none !important; }
+}
+
+/* 骨架 / 空状态 */
+.state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 3rem 1rem;
+  color: #475569;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   8. 后台 /admin —— 撤销前台「深黑正文」规范
+   --------------------------------------------------------------------------
+   第 1 节为了「杜绝浅灰发虚」给 body p / .text-slate-* 加了 !important 深色覆盖。
+   后台左侧栏是深色界面 (#304156)，被这条规则覆盖后文字会变成近黑色、几乎看不见。
+   这里按 html.admin-page 作用域把颜色还给 Tailwind 原值（作用域类由 layouts/admin.vue 挂）。
+   ========================================================================== */
+html.admin-page,
+html.admin-page body {
+  height: 100%;
+  overflow: hidden;
+}
+
+html.admin-page body {
+  background-color: #f1f5f9;
+}
+
+html.admin-page body p {
+  color: inherit !important;
+  font-weight: 400 !important;
+}
+
+html.admin-page .text-slate-400 {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+html.admin-page .text-slate-500 {
+  color: #64748b !important;
+  font-weight: 400 !important;
+}
+
+html.admin-page .text-slate-600 {
+  color: #475569 !important;
+  font-weight: 400 !important;
+}
+
+/* 后台是全屏应用，不给移动端留前台底部操作条的空隙 */
+@media (max-width: 767px) {
+  html.admin-page body {
+    padding-bottom: 0 !important;
+  }
+}
+
+/*
+  后台外壳高度 —— 唯一的高度来源，不走 h-full。
+  h-full 会沿着 html → body → #__nuxt → .admin-shell 逐层求值，而 #__nuxt 没有高度，
+  于是整条链退化成 auto：侧边栏只到内容高度、页面底部出现大片空白。
+  这里直接锚定视口（100dvh 在移动端会跟随地址栏收起，100vh 作兜底）。
+*/
+html.admin-page .admin-shell {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/*
+  登录页是 layout:false，没有 .admin-shell 外壳，h-full 同样会退化成 auto：
+  深色背景只铺到内容高度，下半屏露出 body 的浅灰（#f1f5f9）。
+  这里给它一条同源的视口高度；页面自身 overflow-y-auto 负责内部滚动
+  （html.admin-page body 是 overflow:hidden，超出版心的部分必须自己滚）。
+*/
+html.admin-page .admin-full {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* ==========================================================================
+   9. �ݸ�Ԥ�� ?preview=<token> ���� �����̶������λ��
+   --------------------------------------------------------------------------
+   ֻ�� <html> ���� draft-preview ʱ����Ч������ layouts/default.vue �� useHead �ң�
+   �ÿ���������ʱһ���ֽڶ���Ӱ�죩��
+     �� body ��ѹ����߶ȣ�����ͷ�����ᱻѹ�ں�����£�
+     �� ����ͷ�� #sec-header �ĳ� top = ����ߣ�����ʱ���ں�����·����������ȥ��
+     �� ê����ת��ͬ���Ķ���ƫ�ƣ����ⲻ�ᱻ�����ס��
+   �ײ����ƶ��˲����� / ���߿ͷ����� fixed bottom���붥������޹ء�
+   ========================================================================== */
+html.draft-preview body {
+  padding-top: 36px;
+}
+
+html.draft-preview #sec-header {
+  top: 36px;
+}
+
+html.draft-preview {
+  scroll-padding-top: 104px;
+}

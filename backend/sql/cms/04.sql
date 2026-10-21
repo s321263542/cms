@@ -1,0 +1,23 @@
+﻿
+INSERT INTO cms_site_config (config_key, config_name, config_value, value_type, group_name, lang, is_public, remark) VALUES
+('site_name',        '站点名称',        '永鸿国际',                                   'string','base','zh',1,'导航 Logo 旁文字'),
+('company_full',     '公司全称',        '永鸿国际企业服务有限公司',                     'string','base','zh',1,'页脚展示'),
+('company_addr',     '公司地址',        '香港九龙尖沙咀XX大厦XX室',                     'string','base','zh',1,'页脚展示'),
+('company_phone',    '客服电话',        '400-XXXX-XXXX',                              'string','base','zh',1,'页脚/悬浮客服'),
+('company_email',    '联系邮箱',        'service@example.com',                         'string','base','zh',1,'页脚'),
+('company_fax',      '传真',           '',                                            'string','base','zh',1,'页脚,可留空'),
+('icp_number',       'ICP 备案号',      '粤ICP备XXXXXXXX号',                           'string','seo','zh',1,'页脚备案'),
+('seo_site_title',   '首页标题 TDK',     '永鸿国际|香港新加坡美国公司注册|银行开户年审',   'string','seo','zh',1,'首页 <title>'),
+('seo_site_desc',    '首页描述 TDK',     '永鸿国际专注海外企服:香港公司注册、新加坡开户、美国公司设立、年审报税、商标专利,20000+客户选择', 'string','seo','zh',1,'首页 description'),
+('seo_site_kw',      '首页关键词 TDK',   '香港公司注册,新加坡公司开户,美国公司设立,海外年审', 'string','seo','zh',1,'首页 keywords'),
+('cdn_base',         'CDN/静态资源域名',  'https://cdn.example.com',                    'string','base','zh',1,'★切OSS/换域名只改这一条(与 yml cdn-base-url 保持一致)'),
+('home_rec',         '今日推荐',        '{"title":"今日推荐","num":"12,304位"}',        'json','home','zh',1,'首页推荐数字'),
+('home_stats',       '业务动态',        '[{"name":"香港公司注册","sub":"一对一专业","num":"22,102家"},{"name":"银行开户","sub":"快速下户","num":"18,372家"},{"name":"商标专利","sub":"极速申报","num":"58,824件"},{"name":"美国公司","sub":"一站式设立","num":"9,847家"}]', 'json','home','zh',1,'首页4条业务动态'),
+('home_section_switch','首页区块显隐',   '{"banner":true,"stats":true,"service":true,"process":true,"bank":true,"case":true,"article":true,"footer":true}', 'json','home','zh',0,'各区块 true显示 false隐藏'),
+('home_process',     '办理流程专区',     '{"title":"香港公司注册","sub":"2-3个工作日快速办理，加急6小时拿证","steps":[{"icon":"clipboard","name":"提交资料","desc":"在线填写公司信息"},{"icon":"check-circle","name":"资料审核","desc":"持牌秘书复核"},{"icon":"file-text","name":"政府受理","desc":"递交公司注册处"},{"icon":"award","name":"领取证书","desc":"CR证书+商业登记证"}]}', 'json','home','zh',1,'办理流程标题+步骤'),
+('footer_links',     '页脚导航',        '[{"name":"关于我们","url":"/zh/about"},{"name":"隐私政策","url":"/zh/privacy-policy"},{"name":"服务条款","url":"/zh/terms"}]', 'json','footer','zh',1,'页脚快捷链接'),
+('friend_links',     '友情链接',        '[{"name":"香港公司注册处","url":"https://www.cr.gov.hk"},{"name":"新加坡会计与企业管理局","url":"https://www.acra.gov.sg"}]', 'json','footer','zh',1,'页脚友链(SEO)'),
+('cs_quick_tags',    '客服快捷标签',      '["想了解香港公司注册费用","想开新加坡银行账户","想做年审报税","想注册美国商标"]', 'json','cs','zh',1,'在线客服快捷入口'),
+('cs_auto_reply',    '客服自动回复',      '您好，我是永鸿国际顾问，正在为您查询相关业务，请稍等片刻。', 'string','cs','zh',1,'客服自动应答语'),
+('privacy_version',   '隐私政策版本号',    'v1.0',                                      'string','base','zh',1,'★留资同意时写入 consent_version'),
+('turnstile_site_key','人机验证 SiteKey',  '',                                          'string','base','zh',0,'Cloudflare Turnstile,后端 secret 不进此表');

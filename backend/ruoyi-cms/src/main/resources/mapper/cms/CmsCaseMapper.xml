@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CmsCaseMapper">
+
+    <resultMap id="CmsCaseResult" type="com.ruoyi.cms.domain.CmsCase">
+        <id     column="id"            property="id"/>
+        <result column="country_id"    property="countryId"/>
+        <result column="service_id"    property="serviceId"/>
+        <result column="company_name"  property="companyName"/>
+        <result column="service_title" property="serviceTitle"/>
+        <result column="cost_text"     property="costText"/>
+        <result column="time_text"     property="timeText"/>
+        <result column="quote_text"    property="quoteText"/>
+        <result column="portrait_url"  property="portraitUrl"/>
+        <result column="content"       property="content"/>
+        <result column="sort_order"    property="sortOrder"/>
+        <result column="status"        property="status"/>
+        <result column="ext_json"      property="extJson"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="i18n_json"     property="i18nJson"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+    </resultMap>
+
+    <select id="selectPublicList" resultMap="CmsCaseResult">
+        SELECT id, country_id, service_id, company_name, service_title, cost_text, time_text,
+               quote_text, portrait_url, content, sort_order, status, ext_json, i18n_json
+        FROM cms_case
+        WHERE is_deleted = 0 AND status = 1 AND live_flag = 1
+        ORDER BY sort_order ASC
+    </select>
+
+</mapper>

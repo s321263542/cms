@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CmsArticleMapper">
+
+    <!-- published_at 用 DATE_FORMAT 出成 '2026-03-15T09:00:00' 字符串下发，
+         与 Nuxt mock 的 ISO 字面量逐字节一致，也彻底避开 JVM/DB 时区问题 -->
+    <resultMap id="CmsArticleResult" type="com.ruoyi.cms.domain.CmsArticle">
+        <id     column="id"              property="id"/>
+        <result column="category_type"   property="categoryType"/>
+        <result column="country_id"      property="countryId"/>
+        <result column="title"           property="title"/>
+        <result column="summary"         property="summary"/>
+        <result column="cover_url"       property="coverUrl"/>
+        <result column="content"         property="content"/>
+        <result column="slug"            property="slug"/>
+        <result column="author"          property="author"/>
+        <result column="views"           property="views"/>
+        <result column="is_top"          property="isTop"/>
+        <result column="is_recommend"    property="isRecommend"/>
+        <result column="related_ids"     property="relatedIds"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="published_at"    property="publishedAt"/>
+        <result column="seo_title"       property="seoTitle"/>
+        <result column="seo_description" property="seoDescription"/>
+        <result column="seo_keywords"    property="seoKeywords"/>
+        <result column="i18n_json"       property="i18nJson"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="ext_json"        property="extJson"
+                javaType="java.lang.Object"
+                typeHandler="com.ruoyi.cms.handler.JsonTypeHandler"/>
+        <result column="status"          property="status"/>
+    </resultMap>
+
+    <sql id="SelectCols">
+        id, category_type, country_id, title, summary, cover_url, content, slug, author,
+        views, is_top, is_recommend, related_ids,
+        DATE_FORMAT(published_at, '%Y-%m-%dT%H:%i:%s') AS published_at,
+        seo_title, seo_description, seo_keywords, i18n_json, ext_json, status
+    </sql>
+
+    <!-- 公网可见口径 -->
+    <sql id="PublicWhere">
+        is_deleted = 0 AND status = 1 AND live_flag = 1
+    </sql>
+
+    <!--
+        类型过滤三选一（服务层算好 mode 再传进来）：
+          in       —— /article?type=news,guide 指定类型
+          exclude  —— 默认口径：站点页面型(about/page)不出现在文章列表里
+          featured —— 首页精选 news+guide
+        三条分支 Java 侧都会额外带 status=1（mock 的 featured 分支漏了状态过滤，
+        Java 侧补上，属加固；当前数据两者结果一致）。
+    -->
+    <sql id="TypeFilter">
+        <choose>
+            <when test="mode == 'in' and types != null and types.size() > 0">
+                AND category_type IN
+                <foreach collection="types" item="t" open="(" separator="," close=")">
+                    #{t}
+                </foreach>
+            </when>
+            <when test="mode == 'featured'">
+                AND category_type IN ('news', 'guide')
+            </when>
+            <otherwise>
+                AND category_type NOT IN ('about', 'page')
+            </otherwise>
+        </choose>
+    </sql>
+
+    <select id="countPublicList" resultType="long">
+        SELECT COUNT(*)
+        FROM cms_article
+        WHERE <include refid="PublicWhere"/>
+        <include refid="TypeFilter"/>
+    </select>
+
+    <!-- published_at 倒序；同刻按 id 升序，等价于 JS 稳定排序后的原数组顺序 -->
+    <select id="selectPublicList" resultMap="CmsArticleResult">
+        SELECT <include refid="SelectCols"/>
+        FROM cms_article
+        WHERE <include refid="PublicWhere"/>
+        <include refid="TypeFilter"/>
+        ORDER BY published_at DESC, id ASC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectPublicBySlug" resultMap="CmsArticleResult">
+        SELECT <include refid="SelectCols"/>
+        FROM cms_article
+        WHERE <include refid="PublicWhere"/>
+          AND slug = #{slug}
+        LIMIT 1
+    </select>
+
+    <select id="selectPublicById" resultMap="CmsArticleResult">
+        SELECT <include refid="SelectCols"/>
+        FROM cms_article
+        WHERE <include refid="PublicWhere"/>
+          AND id = #{id}
+        LIMIT 1
+    </select>
+
+    <select id="selectPublicExtras" resultMap="CmsArticleResult">
+        SELECT <include refid="SelectCols"/>
+        FROM cms_article
+        WHERE <include refid="PublicWhere"/>
+        <if test="excludeIds != null and excludeIds.size() > 0">
+            AND id NOT IN
+            <foreach collection="excludeIds" item="x" open="(" separator="," close=")">
+                #{x}
+            </foreach>
+        </if>
+        ORDER BY id ASC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

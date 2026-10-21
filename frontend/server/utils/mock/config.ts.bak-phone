@@ -1,0 +1,229 @@
+/**
+ * cms_site_config 的 mock —— 每个 config_key 有 zh / en 两行（对应 uk_config_key_lang）。
+ * 真实后端上线后整份文件可删。
+ *
+ * ⚠️ 相对《数据库表设计.md》预置 SQL 的差异（详见 README「配置键差异」）：
+ *   · 新增 home_service      —— 首页「核心出海业务矩阵」专区标题/副标题
+ *   · home_rec 增加 sub 字段
+ *   · home_process.steps 增加 time 字段
+ *   · cs_quick_tags 由字符串数组改为 {emoji,label,question} 对象数组
+ *   · 预置值改用原型里的真实工商信息（原 SQL 是占位符）
+ */
+
+export interface ConfigSeed {
+  config_key: string
+  config_name: string
+  value_type: 'string' | 'number' | 'boolean' | 'json' | 'image' | 'color'
+  group_name: 'base' | 'seo' | 'home' | 'footer' | 'cs'
+  is_public: 0 | 1
+  remark?: string
+  zh: any
+  en: any
+}
+
+export const configSeeds: ConfigSeed[] = [
+  /* ---------------- base ---------------- */
+  {
+    config_key: 'site_name', config_name: '站点名称', value_type: 'string', group_name: 'base', is_public: 1,
+    remark: '导航 Logo 旁文字',
+    zh: '永鸿国际', en: 'YONGHONG'
+  },
+  {
+    config_key: 'brand_en', config_name: '品牌英文副标题', value_type: 'string', group_name: 'base', is_public: 1,
+    remark: '导航中文名下方的英文小字',
+    zh: 'YONGHONG INTERNATIONAL CONSULTING', en: 'YONGHONG INTERNATIONAL CONSULTING'
+  },
+  {
+    config_key: 'company_full', config_name: '公司全称', value_type: 'string', group_name: 'base', is_public: 1,
+    remark: '页脚展示',
+    zh: '永鸿国际咨询（深圳）有限公司',
+    en: 'Yonghong International Consulting (Shenzhen) Co., Ltd.'
+  },
+  {
+    config_key: 'company_addr', config_name: '公司地址', value_type: 'string', group_name: 'base', is_public: 1,
+    zh: '深圳市罗湖区南湖街道嘉北社区迎春路3号海燕大厦20层2010',
+    en: '20/F, Haiyan Building, No.3 Yingchun Lu, Luohu District, Shenzhen, China'
+  },
+  {
+    config_key: 'company_phone', config_name: '客服电话', value_type: 'string', group_name: 'base', is_public: 1,
+    zh: '18870909070', en: '+86 18870909070'
+  },
+  {
+    config_key: 'company_email', config_name: '联系邮箱', value_type: 'string', group_name: 'base', is_public: 1,
+    zh: '805856285@qq.com', en: '805856285@qq.com'
+  },
+  {
+    config_key: 'company_credit', config_name: '统一社会信用代码', value_type: 'string', group_name: 'base', is_public: 1,
+    zh: '91440300MA5FEMF959', en: '91440300MA5FEMF959'
+  },
+  {
+    config_key: 'company_regdate', config_name: '成立日期', value_type: 'string', group_name: 'base', is_public: 1,
+    zh: '2018-12-20', en: '2018-12-20'
+  },
+  {
+    config_key: 'privacy_version', config_name: '隐私政策版本号', value_type: 'string', group_name: 'base', is_public: 1,
+    remark: '★留资同意时写入 consent_version',
+    zh: 'v1.0', en: 'v1.0'
+  },
+  {
+    config_key: 'cdn_base', config_name: 'CDN/静态资源域名', value_type: 'string', group_name: 'base', is_public: 1,
+    remark: '★切OSS/换域名只改这一条（开发期留空 = 不加前缀）',
+    zh: '', en: ''
+  },
+  {
+    config_key: 'turnstile_site_key', config_name: '人机验证 SiteKey', value_type: 'string', group_name: 'base', is_public: 0,
+    zh: '', en: ''
+  },
+
+  /* ---------------- seo ---------------- */
+  {
+    config_key: 'seo_site_title', config_name: '首页标题 TDK', value_type: 'string', group_name: 'seo', is_public: 1,
+    zh: '永鸿国际|香港新加坡美国公司注册|银行开户年审',
+    en: 'YONGHONG|Hong Kong & Singapore Company Registration|Bank Account Opening'
+  },
+  {
+    config_key: 'seo_site_desc', config_name: '首页描述 TDK', value_type: 'string', group_name: 'seo', is_public: 1,
+    zh: '永鸿国际专注海外企服：香港公司注册、新加坡开户、美国公司设立、年审报税、商标专利，20000+ 客户选择',
+    en: 'YONGHONG focuses on overseas corporate services: Hong Kong company registration, Singapore bank accounts, US incorporation, audit & trademark. Chosen by 20,000+ clients.'
+  },
+  {
+    config_key: 'seo_site_kw', config_name: '首页关键词 TDK', value_type: 'string', group_name: 'seo', is_public: 1,
+    zh: '香港公司注册,新加坡公司开户,美国公司设立,海外年审',
+    en: 'hong kong company registration,singapore bank account,us incorporation,offshore audit'
+  },
+  {
+    config_key: 'icp_number', config_name: 'ICP 备案号', value_type: 'string', group_name: 'seo', is_public: 1,
+    zh: '粤ICP备2022121434号-1', en: '粤ICP备2022121434号-1'
+  },
+
+  /* ---------------- home ---------------- */
+  {
+    config_key: 'home_rec', config_name: '今日推荐', value_type: 'json', group_name: 'home', is_public: 1,
+    zh: { title: '今日推荐', num: '12,304位', sub: '本月已为企业家成功出海办结' },
+    en: { title: "Today's Pick", num: '12,304', sub: 'Businesses successfully landed overseas this month' }
+  },
+  {
+    config_key: 'home_stats', config_name: '业务动态', value_type: 'json', group_name: 'home', is_public: 1,
+    zh: [
+      { name: '香港公司注册', sub: '一对一专业', num: '22,102家' },
+      { name: '香港银行开户', sub: '100%包开户', num: '1,710件' },
+      { name: '香港做账审计', sub: '办理过程全透明', num: '51,042件' },
+      { name: '香港公司注销', sub: '15天快速下证', num: '1,911件' }
+    ],
+    en: [
+      { name: 'HK Company Setup', sub: '1-on-1 specialists', num: '22,102' },
+      { name: 'HK Bank Account', sub: '100% guaranteed', num: '1,710' },
+      { name: 'HK Audit & Tax', sub: 'Fully transparent', num: '51,042' },
+      { name: 'HK Deregistration', num: '1,911', sub: 'Certificate in 15 days' }
+    ]
+  },
+  {
+    config_key: 'home_service', config_name: '核心服务矩阵专区标题', value_type: 'json', group_name: 'home', is_public: 1,
+    remark: '★新增键：首页「核心出海业务矩阵」标题/副标题',
+    zh: { title: '核心出海业务矩阵', subtitle: '全牌照合规服务 · 助力中国企业无缝拓展全球蓝海市场' },
+    en: { title: 'Global Expansion Matrix', subtitle: 'Fully licensed compliance services · Helping Chinese enterprises open up new global markets' }
+  },
+  {
+    config_key: 'home_process', config_name: '办理流程专区', value_type: 'json', group_name: 'home', is_public: 1,
+    zh: {
+      title: '香港公司注册服务落地页 (2026年最新政策流程)',
+      sub: '全程一对一持牌秘书代办，最快 1 个工作日下发注册证书及商业登记证',
+      steps: [
+        { name: '免费名称核查', desc: '查册香港公司注册署数据库，30分钟内快速出具查册报告', time: '30分钟' },
+        { name: '签署法定协议', desc: '提供董事股东有效身份证件，签署委托协议及法定申请表', time: '1小时' },
+        { name: '递交香港注册署', desc: '永鸿专属政府通道在线直呈CR电子系统，合规加速审批', time: '1个工作日' },
+        { name: '制作全套绿盒印章', desc: '下发注册证书(CR)与商业登记证(BR)，精雕法定印章与章程', time: '1个工作日' },
+        { name: '安排直联银行开户', desc: '对接汇丰/渣打/华侨等合作银行客户经理，视频见证下户', time: '3-5工作日' },
+        { name: '顺丰保价包邮送达', desc: '全套原版绿盒、印章及开户结算卡顺丰保价安全速递到手', time: '次日达' }
+      ]
+    },
+    en: {
+      title: 'Hong Kong Company Registration — 2026 Latest Process',
+      sub: 'Handled 1-on-1 by licensed company secretaries; certificate of incorporation issued in as fast as 1 working day',
+      steps: [
+        { name: 'Free name search', desc: 'Search the Companies Registry database and receive a search report within 30 minutes', time: '30 min' },
+        { name: 'Sign the engagement letter', desc: 'Provide valid ID of directors and shareholders; sign the mandate and statutory forms', time: '1 hour' },
+        { name: 'File with the Companies Registry', desc: 'Our dedicated government channel submits electronically to the CR system', time: '1 working day' },
+        { name: 'Produce the full green box', desc: 'CR certificate and business registration issued; statutory chops and articles engraved', time: '1 working day' },
+        { name: 'Arrange the bank account', desc: 'Introduced to relationship managers at HSBC / SCB / OCBC with video witnessing', time: '3–5 days' },
+        { name: 'Insured courier delivery', desc: 'The original green box, chops and settlement card delivered by insured express', time: 'Next day' }
+      ]
+    }
+  },
+  {
+    config_key: 'home_section_switch', config_name: '首页区块显隐', value_type: 'json', group_name: 'home', is_public: 1,
+    zh: { banner: true, stats: true, service: true, process: true, bank: true, case: true, article: true, footer: true },
+    en: { banner: true, stats: true, service: true, process: true, bank: true, case: true, article: true, footer: true }
+  },
+
+  /* ---------------- footer ---------------- */
+  {
+    config_key: 'footer_links', config_name: '页脚快捷链接', value_type: 'json', group_name: 'footer', is_public: 1,
+    zh: [
+      { name: '隐私政策', url: '/privacy-policy' },
+      { name: '服务条款', url: '/terms-of-service' },
+      { name: '公司简介', url: '/about-profile' },
+      { name: '联系我们', url: '/about-contact' }
+    ],
+    en: [
+      { name: 'Privacy Policy', url: '/privacy-policy' },
+      { name: 'Terms of Service', url: '/terms-of-service' },
+      { name: 'Company Profile', url: '/about-profile' },
+      { name: 'Contact Us', url: '/about-contact' }
+    ]
+  },
+  {
+    config_key: 'friend_links', config_name: '友情链接', value_type: 'json', group_name: 'footer', is_public: 1,
+    remark: 'SEO 友链；url 留空则前台渲染为纯文字，填了才是可点链接',
+    zh: [
+      { name: '高新技术企业认定', url: '' },
+      { name: '实验室认可', url: '' },
+      { name: 'B2B', url: '' },
+      { name: '中小企业管理软件', url: '' },
+      { name: '昆山个体户注册', url: '' },
+      { name: '网站建设公司', url: '' }
+    ],
+    en: [
+      { name: 'Hi-tech Enterprise Accreditation', url: '' },
+      { name: 'Laboratory Accreditation', url: '' },
+      { name: 'B2B', url: '' },
+      { name: 'SME Management Software', url: '' },
+      { name: 'Kunshan Sole Trader Registration', url: '' },
+      { name: 'Website Building', url: '' }
+    ]
+  },
+
+  /* ---------------- cs ---------------- */
+  {
+    config_key: 'cs_quick_tags', config_name: '客服快捷标签', value_type: 'json', group_name: 'cs', is_public: 1,
+    remark: '★由字符串数组改为对象数组：emoji / 按钮文字 / 点击后发送的问句',
+    zh: [
+      { emoji: '🇭🇰', label: '香港公司设立与费用', question: '香港公司设立条件与周期' },
+      { emoji: '🏦', label: '汇丰/渣打免赴港开户', question: '香港离岸银行远程开户' },
+      { emoji: '📑', label: '做账审计与合规申报', question: '香港做账审计与合规申报' },
+      { emoji: '🇸🇬', label: '新加坡设立及商标', question: '新加坡设立与海外商标' }
+    ],
+    en: [
+      { emoji: '🇭🇰', label: 'HK setup & fees', question: 'Requirements and timeline for setting up a Hong Kong company' },
+      { emoji: '🏦', label: 'HSBC / SCB remote account', question: 'Remote offshore bank account opening in Hong Kong' },
+      { emoji: '📑', label: 'Audit & compliance filing', question: 'Hong Kong bookkeeping, audit and compliance filing' },
+      { emoji: '🇸🇬', label: 'Singapore setup & TM', question: 'Singapore incorporation and overseas trademarks' }
+    ]
+  },
+  {
+    config_key: 'cs_auto_reply', config_name: '客服自动回复', value_type: 'string', group_name: 'cs', is_public: 1,
+    zh: '您好，我是永鸿国际顾问，正在为您查询相关业务，请稍等片刻。',
+    en: 'Hello, this is your YONGHONG consultant. I am checking the details for you — one moment please.'
+  }
+]
+
+/** 取某语言的配置快照，缺失键回退 zh */
+export function configFor(lang: string): Record<string, any> {
+  const out: Record<string, any> = {}
+  for (const seed of configSeeds) {
+    if (seed.is_public === 0) continue // 仅后台可见，不下发公网 API
+    const value = lang === 'zh' ? seed.zh : (seed.en ?? seed.zh)
+    out[seed.config_key] = value
+  }
+  return out
+}

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cms.mapper.CmsFlowMapper">
+
+    <!--
+      动态表名：${table} / ${orderBy} 只允许来自 CmsFlow 白名单，调用前必须 isSafeTable 校验。
+      列名来自 information_schema，同样不是用户输入；内容列写入一律加反引号（desc 是关键字）。
+    -->
+
+    <select id="selectAll" resultType="java.util.HashMap">
+        SELECT *
+        FROM `${table}`
+        WHERE is_deleted = 0
+        ORDER BY ${orderBy}
+    </select>
+
+    <select id="selectColumns" resultType="java.util.HashMap">
+        SELECT COLUMN_NAME AS col_name, DATA_TYPE AS data_type
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = #{table}
+        ORDER BY ORDINAL_POSITION
+    </select>
+
+    <select id="selectRow" resultType="java.util.HashMap">
+        SELECT *
+        FROM `${table}`
+        WHERE id = #{id}
+    </select>
+
+    <!--
+      foreach 遍历 Map 时：index = 键，item = 值（MyBatis 对 Map.Entry 的拆法）。
+      所以列名走 ${k}（列名来自 information_schema 白名单 + 反引号包裹，不是用户输入），
+      值走 #{v} 预编译。写成 e.key 会让 e 落到值上，报 String.key。
+    -->
+    <update id="updateFields">
+        UPDATE `${table}`
+        <set>
+            <foreach collection="vals" index="k" item="v" separator=",">
+                `${k}` = #{v}
+            </foreach>
+            , updated_by = #{operator}, updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateFlow">
+        UPDATE `${table}`
+        <set>
+            <if test="p.draft != null">
+                draft_json = #{p.draft},
+            </if>
+            <if test="p.clearDraft != null and p.clearDraft">
+                draft_json = NULL,
+            </if>
+            <if test="p.publishStatus != null">
+                publish_status = #{p.publishStatus},
+            </if>
+            <if test="p.liveFlag != null">
+                live_flag = #{p.liveFlag},
+            </if>
+            <if test="p.submittedBy != null">
+                submitted_by = #{p.submittedBy}, submitted_at = NOW(),
+            </if>
+            <if test="p.publishedBy != null">
+                published_by = #{p.publishedBy}, published_at = NOW(),
+            </if>
+            <if test="p.liveVersionId != null">
+                live_version_id = #{p.liveVersionId},
+            </if>
+            <if test="p.deleted != null and p.deleted">
+                is_deleted = 1,
+            </if>
+            updated_by = #{operator}, updated_at = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insertRow">
+        INSERT INTO `${table}`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach collection="vals" index="k" item="v">
+                `${k}`,
+            </foreach>
+            publish_status, live_flag, is_deleted, created_by, created_at, updated_by, updated_at
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <foreach collection="vals" index="k" item="v">
+                #{v},
+            </foreach>
+            0, 0, 0, #{operator}, NOW(), #{operator}, NOW()
+        </trim>
+    </insert>
+
+    <select id="lastInsertId" resultType="java.lang.Long">
+        SELECT LAST_INSERT_ID()
+    </select>
+
+    <update id="softDelete">
+        UPDATE `${table}`
+        SET is_deleted = 1, updated_by = #{operator}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- ============================================================ 版本 -->
+
+    <select id="selectMaxVersionNo" resultType="java.lang.Long">
+        SELECT MAX(version_no)
+        FROM cms_content_version
+        WHERE ref_table = #{refTable} AND ref_id = #{refId}
+    </select>
+
+    <insert id="insertVersion">
+        INSERT INTO cms_content_version
+            (ref_table, ref_id, version_no, snapshot_json, op_type, op_note, operator, operated_at)
+        VALUES
+            (#{refTable}, #{refId}, #{versionNo}, #{snapshot}, #{opType}, #{opNote}, #{operator}, NOW())
+    </insert>
+
+    <select id="selectVersions" resultType="java.util.HashMap">
+        SELECT v.version_id, v.ref_table, v.ref_id, v.version_no, v.op_type, v.op_note,
+               v.operator, DATE_FORMAT(v.operated_at, '%Y-%m-%dT%H:%i:%s') AS operated_at,
+               c.config_key
+        FROM cms_content_version v
+        LEFT JOIN cms_site_config c ON v.ref_table = 'cms_site_config' AND v.ref_id = c.id
+        WHERE v.ref_table IN
+        <foreach collection="tables" item="t" open="(" separator="," close=")">
+            #{t}
+        </foreach>
+        ORDER BY v.version_id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectVersionById" resultType="java.util.HashMap">
+        SELECT version_id, ref_table, ref_id, version_no, snapshot_json, op_type, op_note,
+               operator, DATE_FORMAT(operated_at, '%Y-%m-%dT%H:%i:%s') AS operated_at
+        FROM cms_content_version
+        WHERE version_id = #{versionId}
+    </select>
+
+    <!-- ============================================================ 审计 -->
+
+    <insert id="insertAudit">
+        INSERT INTO cms_audit_log
+            (ref_table, ref_id, ref_title, action, status_from, status_to, field_changes,
+             operator, operator_ip, operated_at)
+        VALUES
+            (#{refTable}, #{refId}, #{refTitle}, #{action}, #{statusFrom}, #{statusTo}, #{changes},
+             #{operator}, #{ip}, NOW())
+    </insert>
+
+    <select id="selectAudit" resultType="java.util.HashMap">
+        SELECT audit_id, ref_table, ref_id, ref_title, action, status_from, status_to,
+               field_changes, operator, operator_ip,
+               DATE_FORMAT(operated_at, '%Y-%m-%dT%H:%i:%s') AS operated_at
+        FROM cms_audit_log
+        ORDER BY audit_id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="selectVersionCount" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM cms_audit_log
+        WHERE action IN ('approve', 'rollback')
+          AND ref_table = #{refTable}
+          AND ref_title = #{refTitle}
+    </select>
+
+</mapper>

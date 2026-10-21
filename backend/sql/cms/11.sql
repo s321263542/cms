@@ -1,0 +1,43 @@
+
+DROP TABLE IF EXISTS cms_lead;
+CREATE TABLE cms_lead (
+  id              BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+  name            VARCHAR(50)  NOT NULL                COMMENT '姓名',
+  phone           VARCHAR(20)  NOT NULL                COMMENT '手机号(明文,后台列表脱敏展示)',
+  phone_masked    VARCHAR(20)           DEFAULT NULL   COMMENT '脱敏手机号 138****8000(入库即生成)',
+  wechat          VARCHAR(64)           DEFAULT NULL   COMMENT '微信号',
+  email           VARCHAR(100)          DEFAULT NULL   COMMENT '邮箱',
+  company         VARCHAR(120)          DEFAULT NULL   COMMENT '公司名',
+  service_id      BIGINT                DEFAULT NULL   COMMENT '意向服务ID',
+  service_title   VARCHAR(150)          DEFAULT NULL   COMMENT '★服务标题快照(服务删了线索仍完整)',
+  country_id      BIGINT       NOT NULL DEFAULT 0      COMMENT '国家ID,0=未选',
+  quoted_price    VARCHAR(50)           DEFAULT NULL   COMMENT '★报价快照',
+  source          VARCHAR(50)           DEFAULT NULL   COMMENT '来源 2B表单/微信/400/线下',
+  channel         VARCHAR(50)           DEFAULT NULL   COMMENT '渠道标识',
+  dedup_hash      VARCHAR(64)           DEFAULT NULL   COMMENT '★防重 md5(phone+service_id)',
+  ip              VARCHAR(45)           DEFAULT NULL   COMMENT 'IP(v6 45位)',
+  user_agent      VARCHAR(300)          DEFAULT NULL   COMMENT 'UA',
+  utm_source      VARCHAR(64)           DEFAULT NULL   COMMENT 'UTM 来源',
+  utm_medium      VARCHAR(64)           DEFAULT NULL   COMMENT '★UTM 媒介',
+  utm_campaign    VARCHAR(64)           DEFAULT NULL   COMMENT 'UTM 活动',
+  utm_term        VARCHAR(64)           DEFAULT NULL   COMMENT '★UTM 关键词',
+  referrer        VARCHAR(300)          DEFAULT NULL   COMMENT '来路页面',
+  status          TINYINT      NOT NULL DEFAULT 0      COMMENT '状态(字典 cms_lead_status):0待跟进 1跟进中 2已签约 3已流失',
+  follower_name   VARCHAR(64)           DEFAULT NULL   COMMENT '跟进人',
+  last_contacted_at DATETIME            DEFAULT NULL   COMMENT '最后联系时间',
+  follow_note     VARCHAR(1000)         DEFAULT NULL   COMMENT '跟进备注',
+  consent_flag    TINYINT      NOT NULL DEFAULT 0      COMMENT '★是否勾选同意隐私政策 1是',
+  consent_time    DATETIME              DEFAULT NULL   COMMENT '★同意时间(PIPL 留证)',
+  consent_version VARCHAR(20)           DEFAULT NULL   COMMENT '★同意的隐私政策版本号',
+  remark          VARCHAR(500)          DEFAULT NULL   COMMENT '内部备注',
+  is_deleted      TINYINT      NOT NULL DEFAULT 0      COMMENT '逻辑删除',
+  created_by      VARCHAR(64)           DEFAULT 'front' COMMENT '创建来源账号',
+  created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  updated_by      VARCHAR(64)           DEFAULT NULL,
+  updated_at      DATETIME              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_phone (phone),
+  KEY idx_dedup (dedup_hash),                -- ★24h 内查重
+  KEY idx_list (status, is_deleted, created_at),   -- 后台列表:按状态+时间倒序
+  KEY idx_follower (follower_name, last_contacted_at)  -- 我的跟进/到期提醒
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='线索/CRM';

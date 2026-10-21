@@ -1,0 +1,25 @@
+A(mock) http://127.0.0.1:3111
+B(java) http://127.0.0.1:3112
+页面 19
+
+PASS  GET /
+PASS  GET /zh
+PASS  GET /en
+PASS  GET /zh/articles
+PASS  GET /en/articles
+PASS  GET /zh/articles/hk-registry-2026-electronic-search
+PASS  GET /en/articles/offshore-bank-kyc-whitepaper-2026
+PASS  GET /zh/articles/about-team
+PASS  GET /zh/articles/privacy-policy
+PASS  GET /en/terms-of-service
+PASS  GET /zh/hk-company-registration
+PASS  GET /zh/hk-bank-account-opening
+PASS  GET /en/global-trademark-registration
+PASS  GET /zh/banks
+PASS  GET /zh/cases
+PASS  GET /en/cases
+PASS  GET /zh/about-profile
+PASS  GET /zh/about-contact
+PASS  GET /zh/no-such-page
+
+合计 19 项：PASS 19 / FAIL 0

@@ -1,0 +1,101 @@
+Java  http://127.0.0.1:8080
+mock  http://127.0.0.1:3111
+用例  GET 79 + POST 14
+
+PASS  GET /api/public/config?lang=zh
+PASS  GET /api/public/country?lang=zh
+PASS  GET /api/public/banner?lang=zh&position=home
+PASS  GET /api/public/banner?lang=zh
+PASS  GET /api/public/service?lang=zh
+PASS  GET /api/public/service?lang=zh&is_home_show=1
+PASS  GET /api/public/bank?lang=zh
+PASS  GET /api/public/case?lang=zh
+PASS  GET /api/public/config?lang=en
+PASS  GET /api/public/country?lang=en
+PASS  GET /api/public/banner?lang=en&position=home
+PASS  GET /api/public/banner?lang=en
+PASS  GET /api/public/service?lang=en
+PASS  GET /api/public/service?lang=en&is_home_show=1
+PASS  GET /api/public/bank?lang=en
+PASS  GET /api/public/case?lang=en
+PASS  GET /api/public/banner?lang=zh&position=footer
+PASS  GET /api/public/service?lang=zh&category=
+PASS  GET /api/public/service?lang=zh&is_home_show=0
+PASS  GET /api/public/service?lang=jp
+PASS  GET /api/public/service?lang=en&category=company_reg
+PASS  GET /api/public/service?lang=en&category=annual_audit
+PASS  GET /api/public/service?lang=en&category=bank_acct
+PASS  GET /api/public/service?lang=en&category=trademark
+PASS  GET /api/public/service/hk-company-registration?lang=zh
+PASS  GET /api/public/service/hk-company-registration?lang=en
+PASS  GET /api/public/service/hk-company-annual-return?lang=zh
+PASS  GET /api/public/service/hk-company-annual-return?lang=en
+PASS  GET /api/public/service/hk-bank-account-opening?lang=zh
+PASS  GET /api/public/service/hk-bank-account-opening?lang=en
+PASS  GET /api/public/service/hk-audit-tax-filing?lang=zh
+PASS  GET /api/public/service/hk-audit-tax-filing?lang=en
+PASS  GET /api/public/service/hk-company-deregistration?lang=zh
+PASS  GET /api/public/service/hk-company-deregistration?lang=en
+PASS  GET /api/public/service/global-trademark-registration?lang=zh
+PASS  GET /api/public/service/global-trademark-registration?lang=en
+PASS  GET /api/public/service/no-such-slug?lang=zh
+PASS  GET /api/public/article
+PASS  GET /api/public/article?lang=en
+PASS  GET /api/public/article?lang=zh&type=news,guide
+PASS  GET /api/public/article?lang=en&type=news,guide
+PASS  GET /api/public/article?lang=zh&type=news
+PASS  GET /api/public/article?lang=zh&type=guide
+PASS  GET /api/public/article?lang=zh&type=about
+PASS  GET /api/public/article?lang=zh&type=page
+PASS  GET /api/public/article?lang=zh&type=news,guide,about
+PASS  GET /api/public/article?lang=zh&type=,news,
+PASS  GET /api/public/article?lang=zh&featured=1
+PASS  GET /api/public/article?lang=en&featured=1
+PASS  GET /api/public/article?lang=zh&featured=1&type=about
+PASS  GET /api/public/article?lang=zh&featured=0
+PASS  GET /api/public/article?lang=zh&page=1&pageSize=3
+PASS  GET /api/public/article?lang=zh&page=2&pageSize=2
+PASS  GET /api/public/article?lang=zh&page=99&pageSize=3
+PASS  GET /api/public/article?lang=zh&pageSize=100
+PASS  GET /api/public/article?lang=zh&pageSize=0
+PASS  GET /api/public/article?lang=zh&pageSize=abc
+PASS  GET /api/public/article?lang=zh&page=abc
+PASS  GET /api/public/article?lang=zh&page=-3
+PASS  GET /api/public/article?lang=zh&type=news&page=1&pageSize=2
+PASS  GET /api/public/article/hk-registry-2026-electronic-search?lang=zh
+PASS  GET /api/public/article/hk-registry-2026-electronic-search?lang=en
+PASS  GET /api/public/article/offshore-bank-kyc-whitepaper-2026?lang=zh
+PASS  GET /api/public/article/offshore-bank-kyc-whitepaper-2026?lang=en
+PASS  GET /api/public/article/hong-kong-offshore-claim-guide?lang=zh
+PASS  GET /api/public/article/hong-kong-offshore-claim-guide?lang=en
+PASS  GET /api/public/article/about-profile?lang=zh
+PASS  GET /api/public/article/about-profile?lang=en
+PASS  GET /api/public/article/about-team?lang=zh
+PASS  GET /api/public/article/about-team?lang=en
+PASS  GET /api/public/article/about-careers?lang=zh
+PASS  GET /api/public/article/about-careers?lang=en
+PASS  GET /api/public/article/about-contact?lang=zh
+PASS  GET /api/public/article/about-contact?lang=en
+PASS  GET /api/public/article/privacy-policy?lang=zh
+PASS  GET /api/public/article/privacy-policy?lang=en
+PASS  GET /api/public/article/terms-of-service?lang=zh
+PASS  GET /api/public/article/terms-of-service?lang=en
+PASS  GET /api/public/article/no-such-slug?lang=zh
+
+flush 5 lead key(s)
+PASS  POST /lead/submit [no-body]
+PASS  POST /lead/submit [empty-json]
+PASS  POST /lead/submit [consent-false]
+PASS  POST /lead/submit [consent-missing]
+PASS  POST /lead/submit [bad-phone]
+PASS  POST /lead/submit [too-short-phone]
+PASS  POST /lead/submit [normalized-phone]
+PASS  POST /lead/submit [dedup-same-phone]
+PASS  POST /lead/submit [second-valid]
+PASS  POST /lead/submit [flood-1]
+PASS  POST /lead/submit [flood-2]
+PASS  POST /lead/submit [flood-3]
+PASS  POST /lead/submit [flood-4]
+PASS  POST /lead/submit [flood-5]
+
+合计 93 项：PASS 93 / FAIL 0，耗时 0.5s
